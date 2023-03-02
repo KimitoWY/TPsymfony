@@ -14,19 +14,41 @@ class TwigController extends AbstractController
         return new Response('<body>Hello World !</body>');
     }
     #[Route('/vue1', '_vue1')]
-    public function vue1() : Response
+    public function vue1Action() : Response
     {
         return $this->render('Sandbox/Twig/vue1.html.twig');
     }
     #[Route('/vue2', '_vue2')]
-    public function vue2() : Response
+    public function vue2Action() : Response
     {
         return $this->render('Sandbox/Twig/vue2.html.twig');
     }
 
     #[Route('/vue3', '_vue3')]
-    public function vue3() : Response
+    public function vue3Action() : Response
     {
         return $this->render('Sandbox/Twig/vue3.html.twig');
     }
+
+    #[Route('/vue4', '_vue4')]
+    public function vue4Action() : Response
+    {
+        return $this->render('Sandbox/Twig/vue4.html.twig');
+    }
+
+    public function palmaresAction(int $n) : Response
+    {
+        $products = [];
+        for ($i = 1; $i <= $n; $i++){
+            $products[] = ['nom' => 'product' . $i, 'prix' => 1000 - $i];
+        }
+        return $this->render('Sandbox/Layouts/palmares.html.twig', ['products' => $products]);
+    }
+
+    #[Route('/vue5', name: '_vue5')]
+    public function vue5Action(): Response
+    {
+        return $this->render('Sandbox/Twig/vue5.html.twig');
+    }
+
 }
