@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Doctrine{% endblock %}</title>
+    </head>
+    <body>
+        <h1>Exercice Doctrine</h1>
+        {% block vue %}
+            <h2>Liste des flims</h2>
+            <table>
+                <tr><th>id</th><th>titre</th></tr>
+                {%  for film in films %}
+                    <tr>
+                        <td>{{ film.id }}</td>
+                        <td>{{ film.titre }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+
+            <h2>Dump</h2>
+            {{ dump(films) }}
+        {% endblock %}
+    </body>
+</html>
+
