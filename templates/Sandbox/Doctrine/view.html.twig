@@ -1,3 +1,26 @@
-<body>
+{% extends 'Sandbox/Layouts/layout2.html.twig' %}
 
-</body>
+{% block title %}{{ parent() }} : Doctrine{% endblock %}
+
+{% block titre_principal %}Exercice Doctrine{% endblock %}
+
+{% block vue %}
+    <h2>Détail du flim {{ id }}</h2>
+    {% if film is null %}
+        <p>Le film {{ id }} n'existe pas.</p>
+    {% else %}
+        <ul>
+            <li>Id : {{ film.id }}</li>
+            <li>Titre : {{ film.titre }}</li>
+            <li>Année : {{ film.annee }}</li>
+            <li>En stock ? : {{ film.enstock ? 'Oui' : 'Non' }}</li>
+            <li>Prix : {{ film.prix }}</li>
+            <li>Quantité : {{ film.quantite is null ? 'Aucun' : film.quantite }}</li>
+        </ul>
+    {% endif %}
+
+    <p><a href="{{ path('sandbox_doctrine_list') }}">Retour à la liste des flims</a></p>
+
+    <h2>Dump</h2>
+    {{ dump(film) }}
+{% endblock %}

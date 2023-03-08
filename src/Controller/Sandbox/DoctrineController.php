@@ -6,6 +6,7 @@ use App\Entity\Sandbox\Film;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/sandbox/doctrine', name: 'sandbox_doctrine')]
@@ -22,14 +23,34 @@ class DoctrineController extends AbstractController
     }
 
     #[Route('/view/{id}', name: '_view')]
-    public function viewAction(int $id): Response
+    public function viewAction(int $id, EntityManagerInterface $em): Response
     {
-        return $this->render('Sandbox/Doctrine/view.html.twig');
+        $filmRepository = $em->getRepository(Film::class);
+        $film = $filmRepository->find($id);
+        $args = array(
+            'film' => $film,
+            'id' => $id,
+        );
+
+        return $this->render('Sandbox/Doctrine/view.html.twig', $args);
     }
 
     #[Route('/delete/{id}', name: '_delete')]
-    public function deleteAction(int $id): Response
+    public function deleteAction(int $id, EntityManagerInterface $em): Response
     {
+        $filmRepository = $em->getRepository(Film::class);
+        $film = $filmRepository->find($id);
+
+        if (is_null($film)){
+            $this->addFlash('Info', 'Échec de la suppression du film ' . $id);
+            throw new NotFoundHttpException("This film doesn't exist");
+        }
+        else{
+            $em->remove($film);
+            $this->addFlash('Info', 'Suppression du flim ' . $id . ' réussie');
+        }
+
+        $em->flush();
         return $this->redirectToRoute('sandbox_doctrine_list');
     }
 
@@ -52,10 +73,9 @@ class DoctrineController extends AbstractController
         return $this->redirectToRoute('sandbox_doctrine_view', ['id' => $film->getId()]);
     }
 
-    #[Route('/modifierendur', name: '_modifierendur')]
-    public function modifierEnDurAction(EntityManagerInterface $em): Response
+    #[Route('/modifierendur/{id}', name: '_modifierendur')]
+    public function modifierEnDurAction(int $id, EntityManagerInterface $em): Response
     {
-        $id = 6;
         $filmRepository = $em->getRepository(Film::class);
         $film = $filmRepository->find($id);
 
